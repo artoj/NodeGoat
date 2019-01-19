@@ -70,14 +70,6 @@ var exports = function(app, db) {
         return res.redirect(req.query.url);
     });
 
-    // Handle redirect for learning resources link
-    app.get("/tutorial", function(req, res, next) {
-        return res.render("tutorial/a1");
-    });
-    app.get("/tutorial/:page", function(req, res, next) {
-        return res.render("tutorial/" + req.params.page);
-    });
-
     // Error handling middleware
     app.use(ErrorHandler);
 };
