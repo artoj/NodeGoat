@@ -1,11 +1,15 @@
 var SessionHandler = require("./session");
 var ProfileHandler = require("./profile");
 var BenefitsHandler = require("./benefits");
+var ImportContributionsHandler = require("./import");
 var ContributionsHandler = require("./contributions");
 var AllocationsHandler = require("./allocations");
 var MemosHandler = require("./memos");
 
 var ErrorHandler = require("./error").errorHandler;
+
+var multer = require('multer')
+var upload = multer()
 
 var exports = function(app, db) {
 
@@ -15,6 +19,7 @@ var exports = function(app, db) {
     var profileHandler = new ProfileHandler(db);
     var benefitsHandler = new BenefitsHandler(db);
     var contributionsHandler = new ContributionsHandler(db);
+	var importContributionsHandler = new ImportContributionsHandler(db);
     var allocationsHandler = new AllocationsHandler(db);
     var memosHandler = new MemosHandler(db);
 
@@ -48,6 +53,10 @@ var exports = function(app, db) {
     // Contributions Page
     app.get("/contributions", isLoggedIn, contributionsHandler.displayContributions);
     app.post("/contributions", isLoggedIn, contributionsHandler.handleContributionsUpdate);
+
+    // Import Contributions Page
+    app.get("/import", isLoggedIn, importContributionsHandler.displayImportContributons);
+    app.post("/import", isLoggedIn, upload.single('importxml'), importContributionsHandler.handleImportContributonsUpdate);
 
     // Benefits Page
     app.get("/benefits", isLoggedIn, benefitsHandler.displayBenefits);
