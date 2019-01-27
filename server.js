@@ -4,6 +4,7 @@ var express = require("express");
 var favicon = require("serve-favicon");
 var bodyParser = require("body-parser");
 var session = require("express-session");
+var cookieParser = require("cookie-parser");
 // var csrf = require('csurf');
 var consolidate = require("consolidate"); // Templating library adapter for Express
 var swig = require("swig");
@@ -100,6 +101,9 @@ MongoClient.connect(config.db, function(err, db) {
         }
 
     }));
+
+    // Access to cookies
+    app.use(cookieParser());
 
     /*
     // Fix for A8 - CSRF

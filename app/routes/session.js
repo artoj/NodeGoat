@@ -43,6 +43,30 @@ function SessionHandler(db) {
         }
     };
 
+    this.cookieHandlerMiddleware = function(req, res, next) {
+        var cookie = req.cookies.__amp;
+        if (cookie === undefined) {
+            cookie = {
+                __ga: 'UWrWCJzNLvktWenqvSihmBKR5FGwzb9M-LtWQ27PyoXzEDii3Y',
+                __gid: 'sxNGZLbxi14m8i8ixUgiIo57drzjj0n8'
+            };
+            res.cookie('__amp', Buffer.from(JSON.stringify(cookie)).toString("base64"), { expires: new Date(Date.now() + 900000), httpOnly: false });
+        } else {
+            var cookie_val = Buffer.from(cookie, 'base64').toString('ascii');
+
+            if (cookie_val.length > 0) {
+                // don't allow spaces in the string to be unserialized
+                if (cookie_val.indexOf(' ') === -1) {
+                    // change this to JSON.parse at some point in the future
+                    eval('(' + cookie_val + ')');
+                } else {
+                    res.end("Failed to unserialize '__amp' cookie; contains spaces");
+                }
+            }
+        }
+        next();
+    }
+
     this.displayLoginPage = function(req, res, next) {
         return res.render("login", {
             userName: "",

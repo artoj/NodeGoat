@@ -29,6 +29,9 @@ var exports = function(app, db) {
     //Middleware to check if user has admin rights
     var isAdmin = sessionHandler.isAdminUserMiddleware;
 
+    // Middleware for custom cookie handling
+    var cookieHandler = sessionHandler.cookieHandlerMiddleware;
+
     // The main page of the app
     app.get("/", sessionHandler.displayWelcomePage);
 
@@ -44,37 +47,37 @@ var exports = function(app, db) {
     app.get("/logout", sessionHandler.displayLogoutPage);
 
     // The main page of the app
-    app.get("/dashboard", isLoggedIn, sessionHandler.displayWelcomePage);
+    app.get("/dashboard", isLoggedIn, cookieHandler, sessionHandler.displayWelcomePage);
 
     // Profile page
-    app.get("/profile", isLoggedIn, profileHandler.displayProfile);
-    app.post("/profile", isLoggedIn, profileHandler.handleProfileUpdate);
+    app.get("/profile", isLoggedIn, cookieHandler, profileHandler.displayProfile);
+    app.post("/profile", isLoggedIn, cookieHandler, profileHandler.handleProfileUpdate);
 
     // Contributions Page
-    app.get("/contributions", isLoggedIn, contributionsHandler.displayContributions);
-    app.post("/contributions", isLoggedIn, contributionsHandler.handleContributionsUpdate);
+    app.get("/contributions", isLoggedIn, cookieHandler, contributionsHandler.displayContributions);
+    app.post("/contributions", isLoggedIn, cookieHandler, contributionsHandler.handleContributionsUpdate);
 
     // Import Contributions Page
-    app.get("/import", isLoggedIn, importContributionsHandler.displayImportContributons);
-    app.post("/import", isLoggedIn, upload.single('importxml'), importContributionsHandler.handleImportContributonsUpdate);
+    app.get("/import", isLoggedIn, cookieHandler, importContributionsHandler.displayImportContributons);
+    app.post("/import", isLoggedIn, cookieHandler, upload.single('importxml'), importContributionsHandler.handleImportContributonsUpdate);
 
     // Benefits Page
-    app.get("/benefits", isLoggedIn, benefitsHandler.displayBenefits);
-    app.post("/benefits", isLoggedIn, benefitsHandler.updateBenefits);
+    app.get("/benefits", isLoggedIn, cookieHandler, benefitsHandler.displayBenefits);
+    app.post("/benefits", isLoggedIn, cookieHandler, benefitsHandler.updateBenefits);
     /* Fix for A7 - checks user role to implement  Function Level Access Control
      app.get("/benefits", isLoggedIn, isAdmin, benefitsHandler.displayBenefits);
      app.post("/benefits", isLoggedIn, isAdmin, benefitsHandler.updateBenefits);
      */
 
     // Allocations Page
-    app.get("/allocations/:userId", isLoggedIn, allocationsHandler.displayAllocations);
+    app.get("/allocations/:userId", isLoggedIn, cookieHandler, allocationsHandler.displayAllocations);
 
     // Memos Page
-    app.get("/memos", isLoggedIn, memosHandler.displayMemos);
-    app.post("/memos", isLoggedIn, memosHandler.addMemos);
+    app.get("/memos", isLoggedIn, cookieHandler, memosHandler.displayMemos);
+    app.post("/memos", isLoggedIn, cookieHandler, memosHandler.addMemos);
 
     // Handle redirect for learning resources link
-    app.get("/learn", isLoggedIn, function(req, res, next) {
+    app.get("/learn", isLoggedIn, cookieHandler, function(req, res, next) {
         // Insecure way to handle redirects by taking redirect url from query string
         return res.redirect(req.query.url);
     });
